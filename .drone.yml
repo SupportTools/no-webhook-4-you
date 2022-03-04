@@ -1,0 +1,66 @@
+---
+kind: pipeline
+type: docker
+name: No-Webhook-4-You
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  depth: 1
+
+environment:
+  DOCKER_HOST: tcp://docker-in-docker:2375
+  DOCKER_CLI_EXPERIMENTAL: enabled
+
+steps:
+  - name: Waiting for Docker to start
+    image: ncrmro/docker-buildx:19.03.10
+    commands:
+    - echo 'Waiting for docker to start...'
+    - while ! docker info; do sleep 1; done
+
+  - name: Docker-Build
+    image: ncrmro/docker-buildx:19.03.10
+    environment:
+      DOCKER_USERNAME:
+        from_secret: docker-username
+      DOCKER_PASSWORD:
+        from_secret: docker-password    
+    commands:
+    - docker version
+    - docker buildx version
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    - docker buildx create --name multiarch --use
+    - docker buildx build --platform linux/amd64 -f Dockerfile .
+    when:
+      event:
+        - push
+        - pull_request
+
+  - name: Docker Publish
+    image: ncrmro/docker-buildx:19.03.10
+    environment:
+      DOCKER_USERNAME:
+        from_secret: docker-username
+      DOCKER_PASSWORD:
+        from_secret: docker-password
+    commands:
+    - docker version
+    - docker buildx version
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    - docker buildx create --name multiarch --use
+    - docker buildx build --cache-from type=registry,ref=supporttools/no-webhook-4-you:latest --platform linux/amd64 -t supporttools/no-webhook-4-you:latest -t supporttools/no-webhook-4-you:${DRONE_BUILD_NUMBER} --push -f Dockerfile .
+    when:
+      event:
+      - deployment
+      - promote
+
+services:
+- name: docker-in-docker
+  docker:
+  image: docker:19.03.12-dind
+  command: ["dockerd", "--host", "0.0.0.0", "--experimental"]
+  privileged: true
