@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/golang/glog"
@@ -31,14 +30,14 @@ func main() {
 	validatingWebhookInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
 			name := obj.(*v1.ValidatingWebhookConfiguration).GetName()
-			fmt.Printf("ValidatingWebhookConfiguration added: %s \n", name)
+			glog.Infof("ValidatingWebhookConfiguration added: %s \n", name)
 			if name == "rancher.cattle.io" {
-				fmt.Println("Found rancher.cattle.io")
+				glog.Infoln("Found rancher.cattle.io")
 				err := clientset.AdmissionregistrationV1().ValidatingWebhookConfigurations().Delete(context.TODO(), "rancher.cattle.io", meta_v1.DeleteOptions{})
 				if err != nil {
 					glog.Errorln(err)
 				}
-				fmt.Println("Deleted ValidatingWebhookConfigurations rancher.cattle.io")
+				glog.Infoln("Deleted ValidatingWebhookConfigurations rancher.cattle.io")
 			}
 		},
 	})
@@ -47,14 +46,14 @@ func main() {
 	mutatingWebhookInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
 			name := obj.(*v1.MutatingWebhookConfiguration).GetName()
-			fmt.Printf("MutatingWebhookConfigurations added: %s \n", name)
+			glog.Infof("MutatingWebhookConfigurations added: %s \n", name)
 			if name == "rancher.cattle.io" {
-				fmt.Println("Found rancher.cattle.io")
+				glog.Infoln("Found rancher.cattle.io")
 				err := clientset.AdmissionregistrationV1().MutatingWebhookConfigurations().Delete(context.TODO(), "rancher.cattle.io", meta_v1.DeleteOptions{})
 				if err != nil {
 					glog.Errorln(err)
 				}
-				fmt.Println("Deleted MutatingWebhookConfigurations rancher.cattle.io")
+				glog.Infoln("Deleted MutatingWebhookConfigurations rancher.cattle.io")
 			}
 		},
 	})
