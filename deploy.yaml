@@ -1,0 +1,70 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: no-webhook-4-you
+  labels:
+    name: no-webhook-4-you
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: no-webhook-4-you
+  namespace: no-webhook-4-you
+  labels:
+    name: no-webhook-4-you  
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: no-webhook-4-you
+  labels:
+    name: no-webhook-4-you  
+rules:
+- apiGroups:
+  - "admissionregistration.k8s.io"
+  resources:
+  - mutatingwebhookconfigurations
+  - validatingwebhookconfigurations
+  verbs:
+  - get
+  - list
+  - watch
+  - delete
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: no-webhook-4-you
+  labels:
+    name: no-webhook-4-you
+subjects:
+- kind: ServiceAccount
+  name: no-webhook-4-you
+  namespace: no-webhook-4-you
+roleRef:
+  kind: ClusterRole
+  name: no-webhook-4-you
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: no-webhook-4-you
+  labels:
+    name: no-webhook-4-you
+  namespace: no-webhook-4-you
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: no-webhook-4-you
+  template:
+    metadata:
+      labels:
+        app: no-webhook-4-you
+    spec:
+      serviceAccountName: no-webhook-4-you
+      containers:
+      - name: no-webhook-4-you
+        image: supporttools/no-webhook-4-you:latest
