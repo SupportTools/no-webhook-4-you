@@ -26,6 +26,7 @@ func main() {
 
 	kubeInformerFactory := kubeinformers.NewSharedInformerFactory(clientset, time.Second*30)
 
+	glog.Infoln("Starting ValidatingWebhookConfiguration watcher")
 	validatingWebhookInformer := kubeInformerFactory.Admissionregistration().V1().ValidatingWebhookConfigurations()
 	validatingWebhookInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
@@ -42,6 +43,7 @@ func main() {
 		},
 	})
 
+	glog.Infoln("Starting MutatingWebhookConfiguration watcher")
 	mutatingWebhookInformer := kubeInformerFactory.Admissionregistration().V1().MutatingWebhookConfigurations()
 	mutatingWebhookInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
