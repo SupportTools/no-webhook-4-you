@@ -67,4 +67,4 @@ spec:
       serviceAccountName: no-webhook-4-you
       containers:
       - name: no-webhook-4-you
-        image: supporttools/no-webhook-4-you:latest
+        image: supporttools/no-webhook-4-you:5

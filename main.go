@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"time"
 
 	"github.com/golang/glog"
 
+	v1 "k8s.io/api/admissionregistration/v1"
+	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	kubeinformers "k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/cache"
@@ -28,12 +31,14 @@ func main() {
 	validatingWebhookInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
 			fmt.Printf("ValidatingWebhookConfiguration added: %s \n", obj)
-		},
-		DeleteFunc: func(obj interface{}) {
-			fmt.Printf("ValidatingWebhookConfiguration deleted: %s \n", obj)
-		},
-		UpdateFunc: func(oldObj, newObj interface{}) {
-			fmt.Printf("ValidatingWebhookConfiguration changed: %s \n", newObj)
+			if obj.(*v1.ValidatingWebhookConfiguration).Name == "rancher.cattle.io" {
+				fmt.Println("Found rancher.cattle.io")
+				err := clientset.AdmissionregistrationV1().ValidatingWebhookConfigurations().Delete(context.TODO(), "rancher.cattle.io", meta_v1.DeleteOptions{})
+				if err != nil {
+					glog.Errorln(err)
+				}
+				fmt.Println("Deleted ValidatingWebhookConfigurations rancher.cattle.io")
+			}
 		},
 	})
 
@@ -41,12 +46,14 @@ func main() {
 	mutatingWebhookInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
 			fmt.Printf("MutatingWebhookConfigurations added: %s \n", obj)
-		},
-		DeleteFunc: func(obj interface{}) {
-			fmt.Printf("MutatingWebhookConfigurations deleted: %s \n", obj)
-		},
-		UpdateFunc: func(oldObj, newObj interface{}) {
-			fmt.Printf("MutatingWebhookConfigurations changed: %s \n", newObj)
+			if obj.(*v1.MutatingWebhookConfiguration).Name == "rancher.cattle.io" {
+				fmt.Println("Found rancher.cattle.io")
+				err := clientset.AdmissionregistrationV1().MutatingWebhookConfigurations().Delete(context.TODO(), "rancher.cattle.io", meta_v1.DeleteOptions{})
+				if err != nil {
+					glog.Errorln(err)
+				}
+				fmt.Println("Deleted MutatingWebhookConfigurations rancher.cattle.io")
+			}
 		},
 	})
 
