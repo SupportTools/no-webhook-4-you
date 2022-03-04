@@ -68,3 +68,4 @@ spec:
       containers:
       - name: no-webhook-4-you
         image: supporttools/no-webhook-4-you:latest
+        imagePullPolicy: Always

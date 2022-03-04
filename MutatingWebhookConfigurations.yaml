@@ -1,0 +1,82 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  annotations:
+    objectset.rio.cattle.io/applied: H4sIAAAAAAAA/+yUTW+bQBCG/0o1500MxVYTpB4ax6lEo7SBkEOiHIZlsLdedtHugmtZ/PdqwVGdqPmQeu2RmZ2P931G7KAmhyU6hHgHqJR26IRW1n/q4idxZ8kdG6GPOTon6VjoiSghBmAv5vVGkTladmuIYdKF7MM3ocrPGXFD7s0yhTVBDGP4aEPFSuv1Ecd3FdoG+UG13VpHNfQMuKFB142oyTqsG4hVKyUDiQXJV9Wu0K4ghoA4zpAHs5OqoOpTFRWnEVJRnUZ4Mg1xOvsYnc6KWeWn7TUYVHxF5k8vn9srshDf7wDLWlgrtEqpE7S5JWNH8++hC4FBFxbkMIQHBlwKUm6uVSWWfl2OZ60qpZ9zmQXuMgvnaV4mN+LsPL1N8iy/S66DizwdcoGbr8Mky5Nf6eLq/Po2394FF1GWJ2d3gZwDA0umE9663bPlHwnAqOrvBjNo0K1G2pN9waRux1PyWW0cxNNp1PcMKhSyNfRDS8G3EMMFCgnPPaskkTswjoFpJe1Na8RXo9tmsKlGhUuqSR2+fmD+0RM3Ix/UDZnH876Hebr4crPwcUNWt4YP/WEYvdFmPWi1Pm+5bvxyc9laRwZ6HxMlLarKnwzEcKUVfVfnZpu2Cnr2n+yLZN8DtTG6E94voZavYw3fjZWP7J7wvHrUXY7MDnf4t2l2+Nm9OOyN+3nofwcAAP//lfWfNpgFAAA
+    objectset.rio.cattle.io/id: ""
+    objectset.rio.cattle.io/owner-gvk: /v1, Kind=Secret
+    objectset.rio.cattle.io/owner-name: cattle-webhook-ca
+    objectset.rio.cattle.io/owner-namespace: cattle-system
+  creationTimestamp: "2022-03-04T05:24:46Z"
+  generation: 1
+  labels:
+    objectset.rio.cattle.io/hash: 0eca5ac058fbef7f3b93aebf93a841a452395b5f
+  name: rancher.cattle.io
+  resourceVersion: "7553"
+  uid: e6415959-e9ba-4700-b619-2e0bea9445f2
+webhooks:
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJxRENDQVUyZ0F3SUJBZ0lCQURBS0JnZ3Foa2pPUFFRREFqQTdNUnd3R2dZRFZRUUtFeE5rZVc1aGJXbGoKYkdsemRHVnVaWEl0YjNKbk1Sc3dHUVlEVlFRREV4SmtlVzVoYldsamJHbHpkR1Z1WlhJdFkyRXdIaGNOTWpJdwpNekEwTURVeU5ETXhXaGNOTXpJd016QXhNRFV5TkRNeFdqQTdNUnd3R2dZRFZRUUtFeE5rZVc1aGJXbGpiR2x6CmRHVnVaWEl0YjNKbk1Sc3dHUVlEVlFRREV4SmtlVzVoYldsamJHbHpkR1Z1WlhJdFkyRXdXVEFUQmdjcWhrak8KUFFJQkJnZ3Foa2pPUFFNQkJ3TkNBQVNjRXlLYy9lYkRHRWwzak5KeCtoeTVvak82WU5YZzdNRGdYUkZTM3JFVgpvSzBaVEpjZXRVUDBieGF3ZFVNRTJvTDkwZnQ4Y2NpaTZ4alIrUGhyclAzT28wSXdRREFPQmdOVkhROEJBZjhFCkJBTUNBcVF3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFkQmdOVkhRNEVGZ1FVUWZqcEpHRFY5YVJwNGhIYXVQNjQKRmk2anRXQXdDZ1lJS29aSXpqMEVBd0lEU1FBd1JnSWhBTXp4aW94M2RXWS93d2tHdWowWTZmTTNEVjFxTXZ0aApnaEhsNE9FZ0R1LzFBaUVBM0RiMXg2WlcxZjY1RDFEWmNvWnBaUjhhSkwxMmpaeDlOalZ1c2ZHUWs0UT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    service:
+      name: rancher-webhook
+      namespace: cattle-system
+      path: /v1/webhook/mutation
+      port: 443
+  failurePolicy: Fail
+  matchPolicy: Equivalent
+  name: rancherfleet.cattle.io
+  namespaceSelector: {}
+  objectSelector: {}
+  reinvocationPolicy: Never
+  rules:
+  - apiGroups:
+    - management.cattle.io
+    apiVersions:
+    - v3
+    operations:
+    - CREATE
+    resources:
+    - fleetworkspaces
+    scope: Cluster
+  sideEffects: NoneOnDryRun
+  timeoutSeconds: 10
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJxRENDQVUyZ0F3SUJBZ0lCQURBS0JnZ3Foa2pPUFFRREFqQTdNUnd3R2dZRFZRUUtFeE5rZVc1aGJXbGoKYkdsemRHVnVaWEl0YjNKbk1Sc3dHUVlEVlFRREV4SmtlVzVoYldsamJHbHpkR1Z1WlhJdFkyRXdIaGNOTWpJdwpNekEwTURVeU5ETXhXaGNOTXpJd016QXhNRFV5TkRNeFdqQTdNUnd3R2dZRFZRUUtFeE5rZVc1aGJXbGpiR2x6CmRHVnVaWEl0YjNKbk1Sc3dHUVlEVlFRREV4SmtlVzVoYldsamJHbHpkR1Z1WlhJdFkyRXdXVEFUQmdjcWhrak8KUFFJQkJnZ3Foa2pPUFFNQkJ3TkNBQVNjRXlLYy9lYkRHRWwzak5KeCtoeTVvak82WU5YZzdNRGdYUkZTM3JFVgpvSzBaVEpjZXRVUDBieGF3ZFVNRTJvTDkwZnQ4Y2NpaTZ4alIrUGhyclAzT28wSXdRREFPQmdOVkhROEJBZjhFCkJBTUNBcVF3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFkQmdOVkhRNEVGZ1FVUWZqcEpHRFY5YVJwNGhIYXVQNjQKRmk2anRXQXdDZ1lJS29aSXpqMEVBd0lEU1FBd1JnSWhBTXp4aW94M2RXWS93d2tHdWowWTZmTTNEVjFxTXZ0aApnaEhsNE9FZ0R1LzFBaUVBM0RiMXg2WlcxZjY1RDFEWmNvWnBaUjhhSkwxMmpaeDlOalZ1c2ZHUWs0UT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    service:
+      name: rancher-webhook
+      namespace: cattle-system
+      path: /v1/webhook/mutation
+      port: 443
+  failurePolicy: Fail
+  matchPolicy: Equivalent
+  name: rancher.cattle.io
+  namespaceSelector: {}
+  objectSelector: {}
+  reinvocationPolicy: Never
+  rules:
+  - apiGroups:
+    - provisioning.cattle.io
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    resources:
+    - clusters
+    scope: Namespaced
+  - apiGroups:
+    - ""
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    resources:
+    - secrets
+    scope: Namespaced
+  sideEffects: NoneOnDryRun
+  timeoutSeconds: 10
