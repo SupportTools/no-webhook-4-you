@@ -30,8 +30,9 @@ func main() {
 	validatingWebhookInformer := kubeInformerFactory.Admissionregistration().V1().ValidatingWebhookConfigurations()
 	validatingWebhookInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
-			fmt.Printf("ValidatingWebhookConfiguration added: %s \n", obj)
-			if obj.(*v1.ValidatingWebhookConfiguration).Name == "rancher.cattle.io" {
+			name := obj.(*v1.ValidatingWebhookConfiguration).GetName()
+			fmt.Printf("ValidatingWebhookConfiguration added: %s \n", name)
+			if name == "rancher.cattle.io" {
 				fmt.Println("Found rancher.cattle.io")
 				err := clientset.AdmissionregistrationV1().ValidatingWebhookConfigurations().Delete(context.TODO(), "rancher.cattle.io", meta_v1.DeleteOptions{})
 				if err != nil {
@@ -45,8 +46,9 @@ func main() {
 	mutatingWebhookInformer := kubeInformerFactory.Admissionregistration().V1().MutatingWebhookConfigurations()
 	mutatingWebhookInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
-			fmt.Printf("MutatingWebhookConfigurations added: %s \n", obj)
-			if obj.(*v1.MutatingWebhookConfiguration).Name == "rancher.cattle.io" {
+			name := obj.(*v1.MutatingWebhookConfiguration).GetName()
+			fmt.Printf("MutatingWebhookConfigurations added: %s \n", name)
+			if name == "rancher.cattle.io" {
 				fmt.Println("Found rancher.cattle.io")
 				err := clientset.AdmissionregistrationV1().MutatingWebhookConfigurations().Delete(context.TODO(), "rancher.cattle.io", meta_v1.DeleteOptions{})
 				if err != nil {
