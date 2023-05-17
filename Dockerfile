@@ -1,4 +1,4 @@
-FROM golang:latest AS build_base
+FROM golang:1.20 AS build_base
 WORKDIR /src
 COPY . .
 RUN go get -d -v ./...

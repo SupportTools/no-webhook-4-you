@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/golang/glog"
-
 	v1 "k8s.io/api/admissionregistration/v1"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	kubeinformers "k8s.io/client-go/informers"
@@ -18,10 +17,13 @@ func main() {
 	config, err := clientcmd.BuildConfigFromFlags("", "")
 	if err != nil {
 		glog.Errorln(err)
+		return
 	}
+
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		glog.Errorln(err)
+		return
 	}
 
 	kubeInformerFactory := kubeinformers.NewSharedInformerFactory(clientset, time.Second*30)
@@ -32,13 +34,15 @@ func main() {
 		AddFunc: func(obj interface{}) {
 			name := obj.(*v1.ValidatingWebhookConfiguration).GetName()
 			glog.Infof("ValidatingWebhookConfiguration added: %s \n", name)
+
 			if name == "rancher.cattle.io" {
 				glog.Infoln("Found rancher.cattle.io")
 				err := clientset.AdmissionregistrationV1().ValidatingWebhookConfigurations().Delete(context.TODO(), "rancher.cattle.io", meta_v1.DeleteOptions{})
 				if err != nil {
 					glog.Errorln(err)
+				} else {
+					glog.Infoln("Deleted ValidatingWebhookConfigurations rancher.cattle.io")
 				}
-				glog.Infoln("Deleted ValidatingWebhookConfigurations rancher.cattle.io")
 			}
 		},
 	})
@@ -49,13 +53,15 @@ func main() {
 		AddFunc: func(obj interface{}) {
 			name := obj.(*v1.MutatingWebhookConfiguration).GetName()
 			glog.Infof("MutatingWebhookConfigurations added: %s \n", name)
+
 			if name == "rancher.cattle.io" {
 				glog.Infoln("Found rancher.cattle.io")
 				err := clientset.AdmissionregistrationV1().MutatingWebhookConfigurations().Delete(context.TODO(), "rancher.cattle.io", meta_v1.DeleteOptions{})
 				if err != nil {
 					glog.Errorln(err)
+				} else {
+					glog.Infoln("Deleted MutatingWebhookConfigurations rancher.cattle.io")
 				}
-				glog.Infoln("Deleted MutatingWebhookConfigurations rancher.cattle.io")
 			}
 		},
 	})
@@ -63,7 +69,7 @@ func main() {
 	stop := make(chan struct{})
 	defer close(stop)
 	kubeInformerFactory.Start(stop)
-	for {
-		time.Sleep(time.Second)
-	}
+
+	// Keep the program running indefinitely
+	select {}
 }

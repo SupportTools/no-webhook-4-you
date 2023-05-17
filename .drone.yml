@@ -10,19 +10,22 @@ platform:
 clone:
   depth: 1
 
+concurrency:
+  limit: 1
+
 environment:
   DOCKER_HOST: tcp://docker-in-docker:2375
   DOCKER_CLI_EXPERIMENTAL: enabled
 
 steps:
   - name: Waiting for Docker to start
-    image: ncrmro/docker-buildx:19.03.10
+    image: cube8021/docker-buildx:20.10.14-0.8.2
     commands:
     - echo 'Waiting for docker to start...'
     - while ! docker info; do sleep 1; done
 
   - name: Docker-Build
-    image: ncrmro/docker-buildx:19.03.10
+    image: cube8021/docker-buildx:20.10.14-0.8.2
     environment:
       DOCKER_USERNAME:
         from_secret: docker-username
@@ -40,7 +43,7 @@ steps:
         - pull_request
 
   - name: Docker Publish
-    image: ncrmro/docker-buildx:19.03.10
+    image: cube8021/docker-buildx:20.10.14-0.8.2
     environment:
       DOCKER_USERNAME:
         from_secret: docker-username
@@ -61,6 +64,6 @@ steps:
 services:
 - name: docker-in-docker
   docker:
-  image: docker:19.03.12-dind
-  command: ["dockerd", "--host", "0.0.0.0", "--experimental"]
+  image: docker:20.10.14-dind
+  command: ["dockerd", "--host", "0.0.0.0", "--experimental", "--dns", "8.8.8.8", "--dns", "8.8.4.4"]
   privileged: true
