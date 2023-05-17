@@ -18,6 +18,11 @@ environment:
   DOCKER_CLI_EXPERIMENTAL: enabled
 
 steps:
+  - name: GolangCI
+    image: golangci/golangci-lint:latest
+    commands:
+    - golangci-lint run --config=.golangci.yml
+
   - name: Waiting for Docker to start
     image: cube8021/docker-buildx:20.10.14-0.8.2
     commands:

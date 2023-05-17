@@ -40,9 +40,9 @@ func main() {
 				err := clientset.AdmissionregistrationV1().ValidatingWebhookConfigurations().Delete(context.TODO(), "rancher.cattle.io", meta_v1.DeleteOptions{})
 				if err != nil {
 					glog.Errorln(err)
-				} else {
-					glog.Infoln("Deleted ValidatingWebhookConfigurations rancher.cattle.io")
+					return
 				}
+				glog.Infoln("Deleted ValidatingWebhookConfigurations rancher.cattle.io")
 			}
 		},
 	})
@@ -59,9 +59,9 @@ func main() {
 				err := clientset.AdmissionregistrationV1().MutatingWebhookConfigurations().Delete(context.TODO(), "rancher.cattle.io", meta_v1.DeleteOptions{})
 				if err != nil {
 					glog.Errorln(err)
-				} else {
-					glog.Infoln("Deleted MutatingWebhookConfigurations rancher.cattle.io")
+					return
 				}
+				glog.Infoln("Deleted MutatingWebhookConfigurations rancher.cattle.io")
 			}
 		},
 	})
